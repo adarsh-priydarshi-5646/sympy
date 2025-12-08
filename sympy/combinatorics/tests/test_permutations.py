@@ -1,5 +1,5 @@
 from itertools import permutations
-from copy import copy
+from copy import copy, deepcopy
 
 from sympy.core.expr import unchanged
 from sympy.core.numbers import Integer
@@ -32,6 +32,7 @@ def test_Permutation():
     assert list(p) == list(range(4))
     assert p.copy() == p
     assert copy(p) == p
+    assert deepcopy(p) == p
     assert Permutation(size=4) == Permutation(3)
     assert Permutation(Permutation(3), size=5) == Permutation(4)
     # cycle form with size
@@ -562,3 +563,22 @@ def test_AppliedPermutation():
     assert AppliedPermutation(p, 1, evaluate=True) == 2
     assert AppliedPermutation(p, 1, evaluate=False).__class__ == \
         AppliedPermutation
+
+
+
+def test_issue_27002():
+    x = Permutation(1, 2)
+    assert deepcopy(x) == x
+    assert deepcopy(x).array_form == x.array_form
+    assert copy(x) == x
+    assert copy(x).array_form == x.array_form
+    assert x.copy() == x
+    assert x.copy().array_form == x.array_form
+    
+    y = Permutation([1, 0, 2, 3])
+    assert deepcopy(y) == y
+    assert deepcopy(y).array_form == y.array_form
+    assert copy(y) == y
+    assert copy(y).array_form == y.array_form
+    assert y.copy() == y
+    assert y.copy().array_form == y.array_form
